@@ -1,17 +1,14 @@
 package com.example.nightvision;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * Client-side night vision toggle.
@@ -21,6 +18,9 @@ import org.lwjgl.glfw.GLFW;
  */
 public class NightVisionClient implements ClientModInitializer {
     private static final String MOD_ID = "nightvision";
+
+    // 78 = GLFW_KEY_N
+    private static final int DEFAULT_KEY_N = 78;
 
     private static final KeyMapping.Category CATEGORY =
             KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
@@ -32,8 +32,7 @@ public class NightVisionClient implements ClientModInitializer {
     public void onInitializeClient() {
         toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key." + MOD_ID + ".toggle",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_N,
+                DEFAULT_KEY_N,
                 CATEGORY
         ));
 
@@ -52,10 +51,6 @@ public class NightVisionClient implements ClientModInitializer {
             if (!enabled) {
                 player.removeEffect(MobEffects.NIGHT_VISION);
             }
-            player.displayClientMessage(
-                    Component.translatable(enabled ? "message." + MOD_ID + ".on" : "message." + MOD_ID + ".off"),
-                    true // show above the hotbar instead of in chat
-            );
         }
 
         // Keep the effect applied while enabled. Re-checking every tick means it comes back
