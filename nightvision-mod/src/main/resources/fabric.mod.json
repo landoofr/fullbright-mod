@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "nightvision",
+  "version": "${version}",
+  "name": "Night Vision Toggle",
+  "description": "Press a rebindable key to toggle night vision for your player. Client-side only.",
+  "authors": [],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.nightvision.NightVisionClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
