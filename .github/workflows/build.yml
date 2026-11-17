@@ -19,32 +19,3 @@ jobs:
         with:
           name: nightvision-jar
           path: build/libs/nightvision-1.0.0.jar
-      - name: Inspect Minecraft API
-        if: always()
-        run: |
-          J=""
-          for j in $(find ~ -name '*.jar' 2>/dev/null); do
-            if unzip -l "$j" 2>/dev/null | grep -q 'net/minecraft/client/player/LocalPlayer.class'; then J="$j"; break; fi
-          done
-          echo "JAR: $J"
-          echo "=== LocalPlayer message/overlay ==="
-          javap -cp "$J" net.minecraft.client.player.LocalPlayer | grep -iE "message|overlay|actionbar" || true
-          echo "=== Gui overlay/message ==="
-          javap -cp "$J" net.minecraft.client.gui.Gui | grep -iE "overlay|message|actionbar" || true
-          echo "=== LivingEntity effects ==="
-          javap -cp "$J" net.minecraft.world.entity.LivingEntity | grep -iE "addEffect|removeEffect|hasEffect|getEffect" || true
-          echo "=== KeyMapping ==="
-          javap -cp "$J" net.minecraft.client.KeyMapping | grep -iE "KeyMapping\(|consume|isDown|matches|setDown" || true
-          echo "=== Classes in client referencing NIGHT_VISION ==="
-          mkdir -p /tmp/mc && cd /tmp/mc && unzip -q "$J" 'net/minecraft/client/*' 'net/minecraft/world/entity/*' || true
-          grep -rl NIGHT_VISION net/minecraft | head -30 || true
-      - name: Inspect night vision rendering
-        if: always()
-        run: |
-          J=$(find ~ -name 'minecraft-merged*.jar' 2>/dev/null | head -1)
-          for c in net.minecraft.client.renderer.GameRenderer net.minecraft.client.renderer.LightmapRenderStateExtractor net.minecraft.client.renderer.fog.FogRenderer; do
-            echo "=== $c ==="
-            javap -c -p -cp "$J" "$c" | grep -B14 -A10 NIGHT_VISION || true
-          done
-          echo "=== MobEffectInstance ==="
-          javap -p -cp "$J" net.minecraft.world.effect.MobEffectInstance | grep -iE "tick|infinite|endsWithin|blend|factor" || true

@@ -59,14 +59,16 @@ public class NightVisionClient implements ClientModInitializer {
         // Keep the effect applied while enabled. Re-checking every tick means it comes back
         // after respawning or changing dimension, when the game clears effects.
         if (enabled && !player.hasEffect(MobEffects.NIGHT_VISION)) {
-            player.addEffect(new MobEffectInstance(
+            // addEffect() is refused on the client, so use forceAddEffect (what the game itself
+            // uses when a server sends you an effect).
+            player.forceAddEffect(new MobEffectInstance(
                     MobEffects.NIGHT_VISION,
                     MobEffectInstance.INFINITE_DURATION,
                     0,
                     false, // ambient
                     false, // show particles
                     false  // show HUD icon
-            ));
+            ), null);
         }
     }
 }
