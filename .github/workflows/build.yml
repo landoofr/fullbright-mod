@@ -38,3 +38,13 @@ jobs:
           echo "=== Classes in client referencing NIGHT_VISION ==="
           mkdir -p /tmp/mc && cd /tmp/mc && unzip -q "$J" 'net/minecraft/client/*' 'net/minecraft/world/entity/*' || true
           grep -rl NIGHT_VISION net/minecraft | head -30 || true
+      - name: Inspect night vision rendering
+        if: always()
+        run: |
+          J=$(find ~ -name 'minecraft-merged*.jar' 2>/dev/null | head -1)
+          for c in net.minecraft.client.renderer.GameRenderer net.minecraft.client.renderer.LightmapRenderStateExtractor net.minecraft.client.renderer.fog.FogRenderer; do
+            echo "=== $c ==="
+            javap -c -p -cp "$J" "$c" | grep -B14 -A10 NIGHT_VISION || true
+          done
+          echo "=== MobEffectInstance ==="
+          javap -p -cp "$J" net.minecraft.world.effect.MobEffectInstance | grep -iE "tick|infinite|endsWithin|blend|factor" || true

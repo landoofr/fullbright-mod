@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -51,6 +52,8 @@ public class NightVisionClient implements ClientModInitializer {
             if (!enabled) {
                 player.removeEffect(MobEffects.NIGHT_VISION);
             }
+            player.sendOverlayMessage(Component.translatable(
+                    enabled ? "message." + MOD_ID + ".on" : "message." + MOD_ID + ".off"));
         }
 
         // Keep the effect applied while enabled. Re-checking every tick means it comes back
